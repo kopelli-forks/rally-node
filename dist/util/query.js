@@ -12,6 +12,8 @@ var _classCallCheck2 = _interopRequireDefault(require("@babel/runtime/helpers/cl
 
 var _createClass2 = _interopRequireDefault(require("@babel/runtime/helpers/createClass"));
 
+var _defineProperty2 = _interopRequireDefault(require("@babel/runtime/helpers/defineProperty"));
+
 var _lodash = _interopRequireDefault(require("lodash"));
 
 var _ref = _interopRequireDefault(require("./ref"));
@@ -26,6 +28,9 @@ var Query =
 function () {
   function Query(left, op, right) {
     (0, _classCallCheck2["default"])(this, Query);
+    (0, _defineProperty2["default"])(this, "left", void 0);
+    (0, _defineProperty2["default"])(this, "op", void 0);
+    (0, _defineProperty2["default"])(this, "right", void 0);
     this.left = left;
     this.op = op;
     this.right = right;

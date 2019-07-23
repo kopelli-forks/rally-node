@@ -8,23 +8,27 @@ import refUtils from './ref';
  */
 
 export default class Query {
-  constructor(left, op, right) {
+  private left: string | Query;
+  private op: string;
+  private right: string | null | Query;
+
+  constructor(left: string | Query, op: string, right: string | Query) {
     this.left = left;
     this.op = op;
     this.right = right;
   }
 
-  toQueryString() {
+  toQueryString(): string {
     let left = this.left;
     let right = this.right;
-    if (left.toQueryString) {
-      left = left.toQueryString();
+    if ((left as Query).toQueryString) {
+      left = (left as Query).toQueryString();
     }
 
     if (right === null) {
       right = 'null';
-    } else if (right.toQueryString) {
-      right = right.toQueryString();
+    } else if ((right as Query).toQueryString) {
+      right = (right as Query).toQueryString();
     } else if (refUtils.isRef(right)) {
       right = refUtils.getRelative(right);
     } else if (_.isString(right) && right.indexOf(' ') >= 0) {
@@ -34,15 +38,15 @@ export default class Query {
     return `(${left} ${this.op} ${right})`;
   }
 
-  and(left, op, right) {
+  and(left: string | Query, op: string, right: string | Query) {
     return new Query(this, 'AND', (left instanceof Query) ? left : new Query(left, op, right));
   }
 
-  or(left, op, right) {
+  or(left: string | Query, op: string, right: string | Query) {
     return new Query(this, 'OR', (left instanceof Query) ? left : new Query(left, op, right));
   }
 }
 
-export function where(left, op, right) {
+export function where(left: string | Query, op: string, right: string | Query) {
   return new Query(left, op, right);
 }
