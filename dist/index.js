@@ -1,31 +1,30 @@
-'use strict';
+"use strict";
+
+var _interopRequireDefault = require("@babel/runtime/helpers/interopRequireDefault");
 
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
+exports["default"] = void 0;
 
-var _restapi = require('./restapi');
+var _restapi = _interopRequireDefault(require("./restapi"));
 
-var _restapi2 = _interopRequireDefault(_restapi);
+var _query = require("./util/query");
 
-var _query = require('./util/query');
-
-var _ref = require('./util/ref');
-
-var _ref2 = _interopRequireDefault(_ref);
-
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+var _ref = _interopRequireDefault(require("./util/ref"));
 
 var createClient = function createClient(options) {
-  return new _restapi2.default(options);
+  return new _restapi["default"](options);
 };
 
 var restapi = createClient;
 restapi.createClient = createClient;
 restapi.debug = process.env.NODE_DEBUG && /rally/.test(process.env.NODE_DEBUG), restapi.util = {
-  query: { where: _query.where },
-  ref: _ref2.default
+  query: {
+    where: _query.where
+  },
+  ref: _ref["default"]
 };
-
-exports.default = restapi;
+var _default = restapi;
+exports["default"] = _default;
 module.exports = exports.default;

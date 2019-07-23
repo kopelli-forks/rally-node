@@ -1,66 +1,57 @@
-'use strict';
+"use strict";
+
+var _interopRequireDefault = require("@babel/runtime/helpers/interopRequireDefault");
 
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
+exports["default"] = void 0;
 
-var _classCallCheck2 = require('babel-runtime/helpers/classCallCheck');
+var _classCallCheck2 = _interopRequireDefault(require("@babel/runtime/helpers/classCallCheck"));
 
-var _classCallCheck3 = _interopRequireDefault(_classCallCheck2);
+var _createClass2 = _interopRequireDefault(require("@babel/runtime/helpers/createClass"));
 
-var _createClass2 = require('babel-runtime/helpers/createClass');
+var _lodash = _interopRequireDefault(require("lodash"));
 
-var _createClass3 = _interopRequireDefault(_createClass2);
+var _request = _interopRequireDefault(require("./request"));
 
-var _lodash = require('lodash');
+var _callbackify = _interopRequireDefault(require("./util/callbackify"));
 
-var _lodash2 = _interopRequireDefault(_lodash);
+var _ref = _interopRequireDefault(require("./util/ref"));
 
-var _request = require('./request');
+var _package = _interopRequireDefault(require("../package.json"));
 
-var _request2 = _interopRequireDefault(_request);
+/**
+ @module RestApi
 
-var _callbackify = require('./util/callbackify');
-
-var _callbackify2 = _interopRequireDefault(_callbackify);
-
-var _ref = require('./util/ref');
-
-var _ref2 = _interopRequireDefault(_ref);
-
-var _package = require('../package.json');
-
-var _package2 = _interopRequireDefault(_package);
-
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-
-var defaultServer = 'https://rally1.rallydev.com'; /**
-                                                    @module RestApi
-                                                   
-                                                    This module presents a higher-level API for interacting with resources
-                                                    in the Rally REST API.
-                                                    */
-
+ This module presents a higher-level API for interacting with resources
+ in the Rally REST API.
+ */
+var defaultServer = 'https://rally1.rallydev.com';
 var defaultApiVersion = 'v2.0';
 
 function optionsToRequestOptions(options) {
   var qs = {};
+
   if (options.scope) {
     if (options.scope.project) {
-      qs.project = _ref2.default.getRelative(options.scope.project);
+      qs.project = _ref["default"].getRelative(options.scope.project);
+
       if (options.scope.hasOwnProperty('up')) {
         qs.projectScopeUp = options.scope.up;
       }
+
       if (options.scope.hasOwnProperty('down')) {
         qs.projectScopeDown = options.scope.down;
       }
     } else if (options.scope.workspace) {
-      qs.workspace = _ref2.default.getRelative(options.scope.workspace);
+      qs.workspace = _ref["default"].getRelative(options.scope.workspace);
     }
   }
-  if (_lodash2.default.isArray(options.fetch)) {
+
+  if (_lodash["default"].isArray(options.fetch)) {
     qs.fetch = options.fetch.join(',');
-  } else if (_lodash2.default.isString(options.fetch)) {
+  } else if (_lodash["default"].isString(options.fetch)) {
     qs.fetch = options.fetch;
   }
 
@@ -70,12 +61,13 @@ function optionsToRequestOptions(options) {
 }
 
 function collectionPost(options, operation, callback) {
-  return this.request.post(_lodash2.default.merge({
-    url: _ref2.default.getRelative(options.ref) + '/' + options.collection + '/' + operation,
-    json: { CollectionItems: options.data }
+  return this.request.post(_lodash["default"].merge({
+    url: "".concat(_ref["default"].getRelative(options.ref), "/").concat(options.collection, "/").concat(operation),
+    json: {
+      CollectionItems: options.data
+    }
   }, options.requestOptions, optionsToRequestOptions(options)), callback);
 }
-
 /**
  The Rally REST API client
  @constructor
@@ -88,28 +80,30 @@ function collectionPost(options, operation, callback) {
  - @member {object} requestOptions - default options for the request: https://github.com/mikeal/request
  */
 
-var RestApi = function () {
-  function RestApi(options) {
-    (0, _classCallCheck3.default)(this, RestApi);
 
-    options = _lodash2.default.merge({
+var RestApi =
+/*#__PURE__*/
+function () {
+  function RestApi(options) {
+    (0, _classCallCheck2["default"])(this, RestApi);
+    options = _lodash["default"].merge({
       server: defaultServer,
       apiVersion: defaultApiVersion,
       requestOptions: {
         json: true,
         gzip: true,
         headers: {
-          'X-RallyIntegrationLibrary': _package2.default.description + ' v' + _package2.default.version,
-          'X-RallyIntegrationName': _package2.default.description,
+          'X-RallyIntegrationLibrary': "".concat(_package["default"].description, " v").concat(_package["default"].version),
+          'X-RallyIntegrationName': _package["default"].description,
           'X-RallyIntegrationVendor': 'Rally Software, Inc.',
-          'X-RallyIntegrationVersion': _package2.default.version
+          'X-RallyIntegrationVersion': _package["default"].version
         }
       }
     }, options);
-
     var apiKey = options && options.apiKey || process.env.RALLY_API_KEY;
+
     if (apiKey) {
-      options = _lodash2.default.merge({
+      options = _lodash["default"].merge({
         requestOptions: {
           headers: {
             zsessionid: apiKey
@@ -118,7 +112,7 @@ var RestApi = function () {
         }
       }, options);
     } else {
-      options = _lodash2.default.merge({
+      options = _lodash["default"].merge({
         requestOptions: {
           auth: {
             user: options && (options.user || options.userName) || process.env.RALLY_USERNAME,
@@ -129,9 +123,8 @@ var RestApi = function () {
       }, options);
     }
 
-    this.request = new _request2.default(options);
+    this.request = new _request["default"](options);
   }
-
   /**
    Create a new object
    @param {object} options - The create options (required)
@@ -148,17 +141,16 @@ var RestApi = function () {
    */
 
 
-  (0, _createClass3.default)(RestApi, [{
-    key: 'create',
+  (0, _createClass2["default"])(RestApi, [{
+    key: "create",
     value: function create(options, callback) {
       var postBody = {};
       postBody[options.type] = options.data;
-      return this.request.post(_lodash2.default.merge({
-        url: '/' + options.type + '/create',
+      return this.request.post(_lodash["default"].merge({
+        url: "/".concat(options.type, "/create"),
         json: postBody
       }, options.requestOptions, optionsToRequestOptions(options)), callback);
     }
-
     /**
      Update an object
      @param {object} options - The update options (required)
@@ -175,16 +167,15 @@ var RestApi = function () {
      */
 
   }, {
-    key: 'update',
+    key: "update",
     value: function update(options, callback) {
       var postBody = {};
-      postBody[_ref2.default.getType(options.ref)] = options.data;
-      return this.request.put(_lodash2.default.merge({
-        url: _ref2.default.getRelative(options.ref),
+      postBody[_ref["default"].getType(options.ref)] = options.data;
+      return this.request.put(_lodash["default"].merge({
+        url: _ref["default"].getRelative(options.ref),
         json: postBody
       }, options.requestOptions, optionsToRequestOptions(options)), callback);
     }
-
     /**
      Delete an object
      @param {object} options - The delete options (required)
@@ -199,13 +190,12 @@ var RestApi = function () {
      */
 
   }, {
-    key: 'del',
+    key: "del",
     value: function del(options, callback) {
-      return this.request.del(_lodash2.default.merge({
-        url: _ref2.default.getRelative(options.ref)
+      return this.request.del(_lodash["default"].merge({
+        url: _ref["default"].getRelative(options.ref)
       }, options.requestOptions, optionsToRequestOptions(options)), callback);
     }
-
     /**
      Get an object
      @param {object} options - The get options (required)
@@ -221,22 +211,20 @@ var RestApi = function () {
      */
 
   }, {
-    key: 'get',
+    key: "get",
     value: function get(options, callback) {
-      var getPromise = this.request.get(_lodash2.default.merge({
-        url: _ref2.default.getRelative(options.ref)
+      var getPromise = this.request.get(_lodash["default"].merge({
+        url: _ref["default"].getRelative(options.ref)
       }, options.requestOptions, optionsToRequestOptions(options))).then(function (result) {
         return {
           Errors: result.Errors,
           Warnings: result.Warnings,
-          Object: _lodash2.default.omit(result, ['Errors', 'Warnings'])
+          Object: _lodash["default"].omit(result, ['Errors', 'Warnings'])
         };
       });
-
-      (0, _callbackify2.default)(getPromise, callback);
+      (0, _callbackify["default"])(getPromise, callback);
       return getPromise;
     }
-
     /**
      Query for objects
      @param {object} options - The query options (required)
@@ -261,26 +249,28 @@ var RestApi = function () {
      */
 
   }, {
-    key: 'query',
+    key: "query",
     value: function query(options, callback) {
       var self = this;
-      options = _lodash2.default.merge({
+      options = _lodash["default"].merge({
         start: 1,
         pageSize: 200
       }, options);
 
-      var requestOptions = _lodash2.default.merge({
-        url: _ref2.default.getRelative(options.ref) || '/' + options.type,
+      var requestOptions = _lodash["default"].merge({
+        url: _ref["default"].getRelative(options.ref) || "/".concat(options.type),
         qs: {
           start: options.start,
           pagesize: options.limit ? Math.min(options.pageSize, options.limit) : options.pageSize
         }
       }, options.requestOptions, optionsToRequestOptions(options));
-      if (_lodash2.default.isArray(options.order)) {
+
+      if (_lodash["default"].isArray(options.order)) {
         requestOptions.qs.order = options.order.join(',');
-      } else if (_lodash2.default.isString(options.order)) {
+      } else if (_lodash["default"].isString(options.order)) {
         requestOptions.qs.order = options.order;
       }
+
       if (options.query) {
         requestOptions.qs.query = options.query.toQueryString && options.query.toQueryString() || options.query;
       }
@@ -290,8 +280,9 @@ var RestApi = function () {
       function loadRemainingPages(result) {
         var pageResults = result.Results;
         results = results.concat(pageResults);
+
         if (options.limit && result.StartIndex + options.pageSize <= Math.min(options.limit || options.pageSize, result.TotalResultCount)) {
-          return self.request.get(_lodash2.default.merge(requestOptions, {
+          return self.request.get(_lodash["default"].merge(requestOptions, {
             qs: {
               start: result.StartIndex + options.pageSize
             }
@@ -305,11 +296,9 @@ var RestApi = function () {
       }
 
       var queryPromise = this.request.get(requestOptions).then(loadRemainingPages);
-
-      (0, _callbackify2.default)(queryPromise, callback);
+      (0, _callbackify["default"])(queryPromise, callback);
       return queryPromise;
     }
-
     /**
      Adds items to a collection
      @param {object} options - The add options (required)
@@ -327,11 +316,10 @@ var RestApi = function () {
      */
 
   }, {
-    key: 'add',
+    key: "add",
     value: function add(options, callback) {
       return collectionPost.call(this, options, 'add', callback);
     }
-
     /**
      Remove items from a collection
      @param {object} options - The remove options (required)
@@ -349,7 +337,7 @@ var RestApi = function () {
      */
 
   }, {
-    key: 'remove',
+    key: "remove",
     value: function remove(options, callback) {
       return collectionPost.call(this, options, 'remove', callback);
     }
@@ -357,5 +345,5 @@ var RestApi = function () {
   return RestApi;
 }();
 
-exports.default = RestApi;
+exports["default"] = RestApi;
 module.exports = exports.default;
