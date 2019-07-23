@@ -10,5 +10,9 @@
 
   "globals": {
     "Promise": true
+  },
+
+  "rules": {
+    "no-prototype-builtins": "off"
   }
 }
