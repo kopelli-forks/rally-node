@@ -1,38 +1,21 @@
-'use strict';
+"use strict";
+
+var _interopRequireDefault = require("@babel/runtime/helpers/interopRequireDefault");
 
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
+exports["default"] = void 0;
 
-var _promise = require('babel-runtime/core-js/promise');
+var _classCallCheck2 = _interopRequireDefault(require("@babel/runtime/helpers/classCallCheck"));
 
-var _promise2 = _interopRequireDefault(_promise);
+var _createClass2 = _interopRequireDefault(require("@babel/runtime/helpers/createClass"));
 
-var _assign = require('babel-runtime/core-js/object/assign');
+var _request = _interopRequireDefault(require("request"));
 
-var _assign2 = _interopRequireDefault(_assign);
+var _lodash = _interopRequireDefault(require("lodash"));
 
-var _classCallCheck2 = require('babel-runtime/helpers/classCallCheck');
-
-var _classCallCheck3 = _interopRequireDefault(_classCallCheck2);
-
-var _createClass2 = require('babel-runtime/helpers/createClass');
-
-var _createClass3 = _interopRequireDefault(_createClass2);
-
-var _request = require('request');
-
-var _request2 = _interopRequireDefault(_request);
-
-var _lodash = require('lodash');
-
-var _lodash2 = _interopRequireDefault(_lodash);
-
-var _callbackify = require('./util/callbackify');
-
-var _callbackify2 = _interopRequireDefault(_callbackify);
-
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+var _callbackify = _interopRequireDefault(require("./util/callbackify"));
 
 var generateError = function generateError(errorMessages) {
   var e = new Error(errorMessages[0]);
@@ -40,26 +23,29 @@ var generateError = function generateError(errorMessages) {
   return e;
 };
 
-var Request = function () {
+var Request =
+/*#__PURE__*/
+function () {
   function Request(options) {
-    (0, _classCallCheck3.default)(this, Request);
-
-    this.wsapiUrl = options.server + '/slm/webservice/' + options.apiVersion;
-    this.jar = _request2.default.jar();
-    this._requestOptions = (0, _assign2.default)({ jar: this.jar }, options.requestOptions);
-    this.httpRequest = _request2.default.defaults(this._requestOptions);
+    (0, _classCallCheck2["default"])(this, Request);
+    this.wsapiUrl = "".concat(options.server, "/slm/webservice/").concat(options.apiVersion);
+    this.jar = _request["default"].jar();
+    this._requestOptions = Object.assign({
+      jar: this.jar
+    }, options.requestOptions);
+    this.httpRequest = _request["default"].defaults(this._requestOptions);
     this._hasKey = options.requestOptions && options.requestOptions.headers && options.requestOptions.headers.zsessionid;
   }
 
-  (0, _createClass3.default)(Request, [{
-    key: 'getCookies',
+  (0, _createClass2["default"])(Request, [{
+    key: "getCookies",
     value: function getCookies() {
-      var _jar;
+      var _this$jar;
 
-      return (_jar = this.jar).getCookies.apply(_jar, arguments);
+      return (_this$jar = this.jar).getCookies.apply(_this$jar, arguments);
     }
   }, {
-    key: 'auth',
+    key: "auth",
     value: function auth() {
       var _this = this;
 
@@ -70,7 +56,7 @@ var Request = function () {
       });
     }
   }, {
-    key: 'doSecuredRequest',
+    key: "doSecuredRequest",
     value: function doSecuredRequest(method, options, callback) {
       var _this2 = this;
 
@@ -79,41 +65,46 @@ var Request = function () {
       }
 
       var doRequest = function doRequest() {
-        var requestOptions = _lodash2.default.merge({}, options, {
+        var requestOptions = _lodash["default"].merge({}, options, {
           qs: {
             key: _this2._token
           }
         });
+
         return _this2.doRequest(method, requestOptions);
       };
 
-      var securedRequestPromise = void 0;
+      var securedRequestPromise;
+
       if (this._token) {
         securedRequestPromise = doRequest();
       } else {
         securedRequestPromise = this.auth().then(doRequest);
       }
-      (0, _callbackify2.default)(securedRequestPromise, callback);
+
+      (0, _callbackify["default"])(securedRequestPromise, callback);
       return securedRequestPromise;
     }
   }, {
-    key: 'doRequest',
+    key: "doRequest",
     value: function doRequest(method, options, callback) {
       var _this3 = this;
 
-      var doRequestPromise = new _promise2.default(function (resolve, reject) {
-        var requestOptions = _lodash2.default.merge({}, options, {
+      var doRequestPromise = new Promise(function (resolve, reject) {
+        var requestOptions = _lodash["default"].merge({}, options, {
           url: _this3.wsapiUrl + options.url
         });
+
         _this3.httpRequest[method](requestOptions, function (err, response, body) {
           if (err) {
             reject(generateError([err]));
           } else if (!response) {
-            reject(generateError(['Unable to connect to server: ' + _this3.wsapiUrl]));
-          } else if (!body || !_lodash2.default.isObject(body)) {
-            reject(generateError([options.url + ': ' + response.statusCode + '! body=' + body]));
+            reject(generateError(["Unable to connect to server: ".concat(_this3.wsapiUrl)]));
+          } else if (!body || !_lodash["default"].isObject(body)) {
+            reject(generateError(["".concat(options.url, ": ").concat(response.statusCode, "! body=").concat(body)]));
           } else {
-            var result = _lodash2.default.values(body)[0];
+            var result = _lodash["default"].values(body)[0];
+
             if (result.Errors.length) {
               reject(generateError(result.Errors));
             } else {
@@ -122,27 +113,26 @@ var Request = function () {
           }
         });
       });
-
-      (0, _callbackify2.default)(doRequestPromise, callback);
+      (0, _callbackify["default"])(doRequestPromise, callback);
       return doRequestPromise;
     }
   }, {
-    key: 'get',
+    key: "get",
     value: function get(options, callback) {
       return this.doRequest('get', options, callback);
     }
   }, {
-    key: 'post',
+    key: "post",
     value: function post(options, callback) {
       return this.doSecuredRequest('post', options, callback);
     }
   }, {
-    key: 'put',
+    key: "put",
     value: function put(options, callback) {
       return this.doSecuredRequest('put', options, callback);
     }
   }, {
-    key: 'del',
+    key: "del",
     value: function del(options, callback) {
       return this.doSecuredRequest('del', options, callback);
     }
@@ -150,5 +140,5 @@ var Request = function () {
   return Request;
 }();
 
-exports.default = Request;
+exports["default"] = Request;
 module.exports = exports.default;
