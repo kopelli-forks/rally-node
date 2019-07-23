@@ -18,13 +18,13 @@
   ],
   "main": "dist/index.js",
   "scripts": {
-    "build": "cross-env BABEL_ENV=commonjs babel lib --out-dir dist",
+    "build": "cross-env BABEL_ENV=commonjs babel lib --extensions '.js,.ts' --out-dir dist",
     "check-types": "tsc",
     "lint": "eslint .",
     "prepublish": "npm run build",
     "example:crud": "npm run build && node examples/crud.js",
     "example:query": "npm run build && node examples/query.js",
-    "test": "mocha --require @babel/register spec/*.js spec/**/*.js"
+    "test": "mocha --require @babel/register --require ts-node/register spec/*.js spec/**/*.js"
   },
   "repository": {
     "type": "git",
@@ -51,6 +51,7 @@
     "mocha": "^6.2.0",
     "should": "^13.2.3",
     "sinon": "^7.3.2",
+    "ts-node": "^8.3.0",
     "typescript": "^3.5.3"
   },
   "author": "Kyle Morse",
