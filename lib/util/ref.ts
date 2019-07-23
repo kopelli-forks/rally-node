@@ -36,28 +36,28 @@ const REF_REGEXES = [
   new RegExp('.*?\\/' + TYPE_REGEX + '\\/(' + NON_CAP_IDENTITY_REGEX + 'u' + NON_CAP_IDENTITY_REGEX + '[pw]' + NON_CAP_IDENTITY_REGEX + ')' + EXT_REGEX + '?$')
 ];
 
-function match(input) {
+function match(input: any) {
   input = (input && input._ref) ? input._ref : (input || '');
   const regexMatch = _.find(REF_REGEXES, regex => regex.test(input));
   return (regexMatch && input.match(regexMatch)) || null;
 }
 
 export default {
-  isRef(input) {
+  isRef(input: any) {
     return Boolean(match(input));
   },
 
-  getRelative(input) {
+  getRelative(input: any) {
     const refMatch = match(input);
     return (refMatch && [''].concat(refMatch.slice(1)).join('/')) || null;
   },
 
-  getType(input) {
+  getType(input: any) {
     const refMatch = match(input);
     return (refMatch && refMatch[1]) || null;
   },
 
-  getId(input) {
+  getId(input: any) {
     const refMatch = match(input);
     return (refMatch && refMatch[2]) || null;
   }
