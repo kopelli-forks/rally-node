@@ -23,7 +23,7 @@
     "prepublish": "npm run build",
     "example:crud": "npm run build && node examples/crud.js",
     "example:query": "npm run build && node examples/query.js",
-    "test": "mocha --compilers js:babel-register spec/*.js spec/**/*.js"
+    "test": "mocha --require babel-core/register spec/*.js spec/**/*.js"
   },
   "repository": {
     "type": "git",
@@ -41,12 +41,11 @@
     "babel-plugin-transform-runtime": "^6.23.0",
     "babel-preset-env": "^1.7.0",
     "babel-preset-stage-1": "^6.24.1",
-    "babel-register": "^6.26.0",
     "cross-env": "^5.2.0",
     "eslint": "^6.1.0",
-    "mocha": "5.2.0",
-    "should": "10.0.0",
-    "sinon": "1.17.3"
+    "mocha": "^6.2.0",
+    "should": "^13.2.3",
+    "sinon": "^7.3.2"
   },
   "author": "Kyle Morse",
   "license": "MIT",
