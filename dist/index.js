@@ -5,7 +5,7 @@ var _interopRequireDefault = require("@babel/runtime/helpers/interopRequireDefau
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
-exports["default"] = void 0;
+exports.rally = void 0;
 
 var _restapi = _interopRequireDefault(require("./restapi"));
 
@@ -17,14 +17,16 @@ var createClient = function createClient(options) {
   return new _restapi["default"](options);
 };
 
-var restapi = createClient;
-restapi.createClient = createClient;
-restapi.debug = process.env.NODE_DEBUG && /rally/.test(process.env.NODE_DEBUG), restapi.util = {
-  query: {
-    where: _query.where
-  },
-  ref: _ref["default"]
+var nodeDebug = process.env.NODE_DEBUG || '';
+var debug = nodeDebug !== '' && /rally/.test(nodeDebug);
+var rally = {
+  createClient: createClient,
+  debug: debug,
+  util: {
+    query: {
+      where: _query.where
+    },
+    ref: _ref["default"]
+  }
 };
-var _default = restapi;
-exports["default"] = _default;
-module.exports = exports.default;
+exports.rally = rally;
