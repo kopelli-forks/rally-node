@@ -294,16 +294,16 @@ describe('RestApi', () => {
     });
 
     it('calls back with error', ( ) => {
-        const error = 'Error!';
-        const restApi = new RestApi();
-        get.returns(Promise.reject([error]));
-        restApi.get({
-          ref: {_ref: '/defect/1234'}
-        }, (err, result) => {
-          err.should.eql([error]);
-          should.not.exist(result);
-           
-        });
+      const error = 'Error!';
+      const restApi = new RestApi();
+      get.returns(Promise.reject([error]));
+      restApi.get({
+        ref: {_ref: '/defect/1234'}
+      }, (err, result) => {
+        err.should.eql([error]);
+        should.not.exist(result);
+          
+      });
     });
 
     it('rejects promise with error', async ( ) => {
@@ -426,20 +426,20 @@ describe('RestApi', () => {
     });
 
     it('calls back with results', ( ) => {
-        const results = [
-            {Name: 'Foo'}
-        ];
-        const restApi = new RestApi();
-        get.returns(Promise.resolve({Errors: [], Warnings: [], StartIndex: 1, TotalResultCount: results.length, Results: results}));
-        restApi.query({
-          type: 'defect'
-        }, (error, result) => {
-          should.not.exist(error);
-          result.Errors.should.eql([]);
-          result.Warnings.should.eql([]);
-          result.Results.should.eql(results);
-           
-        });
+      const results = [
+        {Name: 'Foo'}
+      ];
+      const restApi = new RestApi();
+      get.returns(Promise.resolve({Errors: [], Warnings: [], StartIndex: 1, TotalResultCount: results.length, Results: results}));
+      restApi.query({
+        type: 'defect'
+      }, (error, result) => {
+        should.not.exist(error);
+        result.Errors.should.eql([]);
+        result.Warnings.should.eql([]);
+        result.Results.should.eql(results);
+          
+      });
     });
 
     it('resolves promise with results', async ( ) => {

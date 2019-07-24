@@ -20,7 +20,11 @@ interface IRequestOptions {
   workspace?: string | null;
   fetch?: string;
 }
-function optionsToRequestOptions(options: any) {
+
+interface IRequestOptionsContainer {
+  qs: IRequestOptions;
+}
+function optionsToRequestOptions(options: any): IRequestOptionsContainer {
   const qs: IRequestOptions = {};
   if (options.scope) {
     if (options.scope.project) {
@@ -124,7 +128,7 @@ export default class RestApi {
     this.request = new Request(options);
   }
 
-  private collectionPost(options: any, operation: string, callback: any) {
+  private collectionPost(options: any, operation: string, callback: any): Promise<any> {
     return this.request.post(
       _.merge(
         {
@@ -152,7 +156,7 @@ export default class RestApi {
    - @param {object} result - the operation result
    @return {promise}
    */
-  create(options: any, callback: any) {
+  create(options: any, callback: any): Promise<any> {
     const postBody: any = {};
     postBody[options.type] = options.data;
     return this.request.post(
@@ -182,7 +186,7 @@ export default class RestApi {
    - @param {object} result - the operation result
    @return {promise}
    */
-  update(options: any, callback: any) {
+  update(options: any, callback: any): Promise<any> {
     const postBody: any = {};
     postBody[refUtils.getType(options.ref)] = options.data;
     return this.request.put(
@@ -210,7 +214,7 @@ export default class RestApi {
    - @param {object} result - the operation result
    @return {promise}
    */
-  del(options: any, callback: any) {
+  del(options: any, callback: any): Promise<any> {
     return this.request.del(
       _.merge(
         {
@@ -236,7 +240,7 @@ export default class RestApi {
    - @param {object} result - the operation result
    @return {promise}
    */
-  get(options: any, callback: any) {
+  get(options: any, callback: any): Promise<any> {
     const getPromise = this.request.get(
       _.merge(
         {
@@ -279,7 +283,7 @@ export default class RestApi {
    - @param {object} result - the operation result
    @return {promise}
    */
-  query(options: any, callback: any) {
+  query(options: any, callback: any): Promise<any> {
     const self = this;
     options = _.merge({
       start: 1,
@@ -343,7 +347,7 @@ export default class RestApi {
    - @param {object} result - the operation result
    @return {promise}
    */
-  add(options: any, callback: any) {
+  add(options: any, callback: any): Promise<any> {
     return this.collectionPost(options, 'add', callback);
   }
 
@@ -362,7 +366,7 @@ export default class RestApi {
    - @param {object} result - the operation result
    @return {promise}
    */
-  remove(options: any, callback: any) {
+  remove(options: any, callback: any): Promise<any> {
     return this.collectionPost(options, 'remove', callback);
   }
 }

@@ -6,7 +6,7 @@ class RequestError extends Error {
   errors?: string[];
 }
 
-const generateError = (errorMessages: string[]) => {
+const generateError: (x: string[]) => RequestError = (errorMessages: string[]) => {
   const e = new RequestError(errorMessages[0]);
   e.errors = errorMessages;
   return e;
@@ -15,8 +15,8 @@ const generateError = (errorMessages: string[]) => {
 interface IRequestConstructorOptions {
   requestOptions?: {
     headers?: {
-      zsessionid: string
-    }
+      zsessionid: string;
+    };
   };
   server?: string;
   apiVersion?: string;
@@ -41,7 +41,7 @@ export default class Request {
         options.requestOptions.headers.zsessionid;
   }
 
-  auth() {
+  auth(): Promise<any> {
     return this.doRequest('get', {
       url: '/security/authorize'
     }).then((result) => {
@@ -49,12 +49,12 @@ export default class Request {
     });
   }
 
-  private doSecuredRequest(method: string, options: request.UrlOptions, callback?: callback) {
+  private doSecuredRequest(method: string, options: request.UrlOptions, callback?: callback): Promise<any> {
     if (this._hasKey) {
       return this.doRequest(method, options, callback);
     }
 
-    const doRequest = () => {
+    const doRequest: () => Promise<any> = () => {
       const requestOptions = _.merge(
         {},
         options,
@@ -77,7 +77,7 @@ export default class Request {
     return securedRequestPromise;
   }
 
-  private doRequest(method: string, options: request.UrlOptions, callback?: callback) {
+  private doRequest(method: string, options: request.UrlOptions, callback?: callback): Promise<any> {
     const doRequestPromise = new Promise<any>((resolve, reject) => {
       const requestOptions = _.merge({}, options, {
         url: this.wsapiUrl + options.url
@@ -114,19 +114,19 @@ export default class Request {
     return doRequestPromise;
   }
 
-  get(options: request.UrlOptions, callback?: callback) {
+  get(options: request.UrlOptions, callback?: callback): Promise<any> {
     return this.doRequest('get', options, callback);
   }
 
-  post(options: request.UrlOptions, callback?: callback) {
+  post(options: request.UrlOptions, callback?: callback): Promise<any> {
     return this.doSecuredRequest('post', options, callback);
   }
 
-  put(options: request.UrlOptions, callback?: callback) {
+  put(options: request.UrlOptions, callback?: callback): Promise<any> {
     return this.doSecuredRequest('put', options, callback);
   }
 
-  del(options: request.UrlOptions, callback?: callback) {
+  del(options: request.UrlOptions, callback?: callback): Promise<any> {
     return this.doSecuredRequest('del', options, callback);
   }
 }

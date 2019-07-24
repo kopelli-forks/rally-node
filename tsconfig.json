@@ -10,6 +10,9 @@
     "strict": true,
     "target": "esnext"
   },
+  "exclude": [
+    "dist"
+  ],
   "include": [
     "lib"
   ]

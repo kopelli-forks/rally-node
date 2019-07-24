@@ -38,15 +38,15 @@ export default class Query {
     return `(${left} ${this.op} ${right})`;
   }
 
-  and(left: string | Query, op: string, right: string | Query) {
+  and(left: string | Query, op: string, right: string | Query): Query {
     return new Query(this, 'AND', (left instanceof Query) ? left : new Query(left, op, right));
   }
 
-  or(left: string | Query, op: string, right: string | Query) {
+  or(left: string | Query, op: string, right: string | Query): Query {
     return new Query(this, 'OR', (left instanceof Query) ? left : new Query(left, op, right));
   }
 }
 
-export function where(left: string | Query, op: string, right: string | Query) {
+export function where(left: string | Query, op: string, right: string | Query): Query {
   return new Query(left, op, right);
 }

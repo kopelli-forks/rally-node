@@ -36,7 +36,7 @@ const REF_REGEXES = [
   new RegExp('.*?\\/' + TYPE_REGEX + '\\/(' + NON_CAP_IDENTITY_REGEX + 'u' + NON_CAP_IDENTITY_REGEX + '[pw]' + NON_CAP_IDENTITY_REGEX + ')' + EXT_REGEX + '?$')
 ];
 
-function match(input: any) {
+function match(input: any): any {
   input = (input && input._ref) ? input._ref : (input || '');
   const regexMatch = _.find(REF_REGEXES, regex => regex.test(input));
   return (regexMatch && input.match(regexMatch)) || null;

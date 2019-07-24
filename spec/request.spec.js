@@ -86,14 +86,14 @@ describe('Request', () => {
     });
 
     it('calls back with error with an empty response', ( ) => {
-        const rr = createRequest();
-        get.yieldsAsync(null, null);
-        rr.doRequest('get', {url: '/someUrl'}, (err, body) => {
-          err.errors.should.eql(['Unable to connect to server: ' + rr.wsapiUrl]);
-          should.not.exist(body);
-           
-        });
+      const rr = createRequest();
+      get.yieldsAsync(null, null);
+      rr.doRequest('get', {url: '/someUrl'}, (err, body) => {
+        err.errors.should.eql(['Unable to connect to server: ' + rr.wsapiUrl]);
+        should.not.exist(body);
+          
       });
+    });
 
     it('rejects the promise with an empty response', async ( ) => {
       const rr = createRequest();
