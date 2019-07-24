@@ -11,6 +11,8 @@ var _classCallCheck2 = _interopRequireDefault(require("@babel/runtime/helpers/cl
 
 var _createClass2 = _interopRequireDefault(require("@babel/runtime/helpers/createClass"));
 
+var _defineProperty2 = _interopRequireDefault(require("@babel/runtime/helpers/defineProperty"));
+
 var _lodash = _interopRequireDefault(require("lodash"));
 
 var _request = _interopRequireDefault(require("./request"));
@@ -59,33 +61,23 @@ function optionsToRequestOptions(options) {
     qs: qs
   };
 }
-
-function collectionPost(options, operation, callback) {
-  return this.request.post(_lodash["default"].merge({
-    url: "".concat(_ref["default"].getRelative(options.ref), "/").concat(options.collection, "/").concat(operation),
-    json: {
-      CollectionItems: options.data
-    }
-  }, options.requestOptions, optionsToRequestOptions(options)), callback);
-}
 /**
- The Rally REST API client
- @constructor
- @param {object} options (optional) - optional config for the REST client
- - @member {string} server - server for the Rally API (default: https://rally1.rallydev.com)
- - @member {string} apiVersion - the Rally REST API version to use for requests (default: v2.0)
- - @member {string} userName||user - the username to use for requests (default: RALLY_USERNAME env variable) (@deprecated in favor of apiKey)
- - @member {string} password||pass - the password to use for requests (default: RALLY_PASSWORD env variable) (@deprecated in favor of apiKey)
- - @member {string} apiKey - the api key to use for requests (default: RALLY_API_KEY env variable)
- - @member {object} requestOptions - default options for the request: https://github.com/mikeal/request
+ * Configuration options for the REST client.
  */
 
 
+/**
+ The Rally REST API client
+ */
 var RestApi =
 /*#__PURE__*/
 function () {
+  /**
+   * @param options (optional) - optional config for the REST client
+   */
   function RestApi(options) {
     (0, _classCallCheck2["default"])(this, RestApi);
+    (0, _defineProperty2["default"])(this, "request", void 0);
     options = _lodash["default"].merge({
       server: defaultServer,
       apiVersion: defaultApiVersion,
@@ -125,23 +117,33 @@ function () {
 
     this.request = new _request["default"](options);
   }
-  /**
-   Create a new object
-   @param {object} options - The create options (required)
-   - @member {string} type - The type to be created, e.g. defect, hierarchicalrequirement, etc. (required)
-   - @member {object} data - Key/value pairs of data with which to populate the new object (required)
-   - @member {object} scope - the default scoping to use.  if not specified server default will be used.
-   - @member {ref} scope.workspace - the workspace
-   - @member {string/string[]} fetch - the fields to include on the returned record
-   - @member {object} requestOptions - Additional options to be applied to the request: https://github.com/mikeal/request (optional)
-   @param {function} callback - A callback to be called when the operation completes
-   - @param {string[]} errors - Any errors which occurred
-   - @param {object} result - the operation result
-   @return {promise}
-   */
-
 
   (0, _createClass2["default"])(RestApi, [{
+    key: "collectionPost",
+    value: function collectionPost(options, operation, callback) {
+      return this.request.post(_lodash["default"].merge({
+        url: "".concat(_ref["default"].getRelative(options.ref), "/").concat(options.collection, "/").concat(operation),
+        json: {
+          CollectionItems: options.data
+        }
+      }, options.requestOptions, optionsToRequestOptions(options)), callback);
+    }
+    /**
+     Create a new object
+     @param {object} options - The create options (required)
+     - @member {string} type - The type to be created, e.g. defect, hierarchicalrequirement, etc. (required)
+     - @member {object} data - Key/value pairs of data with which to populate the new object (required)
+     - @member {object} scope - the default scoping to use.  if not specified server default will be used.
+     - @member {ref} scope.workspace - the workspace
+     - @member {string/string[]} fetch - the fields to include on the returned record
+     - @member {object} requestOptions - Additional options to be applied to the request: https://github.com/mikeal/request (optional)
+     @param {function} callback - A callback to be called when the operation completes
+     - @param {string[]} errors - Any errors which occurred
+     - @param {object} result - the operation result
+     @return {promise}
+     */
+
+  }, {
     key: "create",
     value: function create(options, callback) {
       var postBody = {};
@@ -318,7 +320,7 @@ function () {
   }, {
     key: "add",
     value: function add(options, callback) {
-      return collectionPost.call(this, options, 'add', callback);
+      return this.collectionPost(options, 'add', callback);
     }
     /**
      Remove items from a collection
@@ -339,7 +341,7 @@ function () {
   }, {
     key: "remove",
     value: function remove(options, callback) {
-      return collectionPost.call(this, options, 'remove', callback);
+      return this.collectionPost(options, 'remove', callback);
     }
   }]);
   return RestApi;

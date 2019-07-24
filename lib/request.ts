@@ -13,13 +13,13 @@ const generateError = (errorMessages: string[]) => {
 }
 
 interface IRequestConstructorOptions {
-  requestOptions: {
-    headers: {
+  requestOptions?: {
+    headers?: {
       zsessionid: string
     }
   };
-  server: string;
-  apiVersion: string;
+  server?: string;
+  apiVersion?: string;
 }
 
 type callback = (err: any, obj: any) => void;

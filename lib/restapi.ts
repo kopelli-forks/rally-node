@@ -13,8 +13,15 @@ import pkgInfo from '../package.json';
 const defaultServer = 'https://rally1.rallydev.com';
 const defaultApiVersion = 'v2.0';
 
-function optionsToRequestOptions(options) {
-  const qs = {};
+interface IRequestOptions {
+  project?: string | null;
+  projectScopeUp?: boolean;
+  projectScopeDown?: boolean;
+  workspace?: string | null;
+  fetch?: string;
+}
+function optionsToRequestOptions(options: any) {
+  const qs: IRequestOptions = {};
   if (options.scope) {
     if (options.scope.project) {
       qs.project = refUtils.getRelative(options.scope.project);
@@ -39,33 +46,44 @@ function optionsToRequestOptions(options) {
   };
 }
 
-function collectionPost(options, operation, callback) {
-  return this.request.post(
-    _.merge(
-      {
-        url: `${refUtils.getRelative(options.ref)}/${options.collection}/${operation}`,
-        json: {CollectionItems: options.data}
-      },
-      options.requestOptions,
-      optionsToRequestOptions(options)
-    ),
-    callback
-  );
-}
+/**
+ * Configuration options for the REST client.
+ */
+interface IRestApiOptions {
+  /**
+   * server for the Rally API (default: https://rally1.rallydev.com)
+   */
+  server?: string;
 
+  /**
+   * the Rally REST API version to use for requests (default: v2.0)
+   */
+  apiVersion?: string;
+
+  /**
+   * the api key to use for requests (default: RALLY_API_KEY env variable)
+   */
+  apiKey?: string;
+
+  /**
+   * default options for the request: https://github.com/mikeal/request
+   */
+  requestOptions?: object;
+
+  userName?: string;
+  user?: string;
+  password?: string;
+  pass?: string;
+}
 /**
  The Rally REST API client
- @constructor
- @param {object} options (optional) - optional config for the REST client
- - @member {string} server - server for the Rally API (default: https://rally1.rallydev.com)
- - @member {string} apiVersion - the Rally REST API version to use for requests (default: v2.0)
- - @member {string} userName||user - the username to use for requests (default: RALLY_USERNAME env variable) (@deprecated in favor of apiKey)
- - @member {string} password||pass - the password to use for requests (default: RALLY_PASSWORD env variable) (@deprecated in favor of apiKey)
- - @member {string} apiKey - the api key to use for requests (default: RALLY_API_KEY env variable)
- - @member {object} requestOptions - default options for the request: https://github.com/mikeal/request
  */
 export default class RestApi {
-  constructor(options) {
+  private request: Request;
+  /**
+   * @param options (optional) - optional config for the REST client
+   */
+  constructor(options: IRestApiOptions) {
     options = _.merge({
       server: defaultServer,
       apiVersion: defaultApiVersion,
@@ -106,6 +124,20 @@ export default class RestApi {
     this.request = new Request(options);
   }
 
+  private collectionPost(options: any, operation: string, callback: any) {
+    return this.request.post(
+      _.merge(
+        {
+          url: `${refUtils.getRelative(options.ref)}/${options.collection}/${operation}`,
+          json: {CollectionItems: options.data}
+        },
+        options.requestOptions,
+        optionsToRequestOptions(options)
+      ),
+      callback
+    );
+  }
+
   /**
    Create a new object
    @param {object} options - The create options (required)
@@ -120,8 +152,8 @@ export default class RestApi {
    - @param {object} result - the operation result
    @return {promise}
    */
-  create(options, callback) {
-    const postBody = {};
+  create(options: any, callback: any) {
+    const postBody: any = {};
     postBody[options.type] = options.data;
     return this.request.post(
       _.merge(
@@ -150,8 +182,8 @@ export default class RestApi {
    - @param {object} result - the operation result
    @return {promise}
    */
-  update(options, callback) {
-    const postBody = {};
+  update(options: any, callback: any) {
+    const postBody: any = {};
     postBody[refUtils.getType(options.ref)] = options.data;
     return this.request.put(
       _.merge(
@@ -178,7 +210,7 @@ export default class RestApi {
    - @param {object} result - the operation result
    @return {promise}
    */
-  del(options, callback) {
+  del(options: any, callback: any) {
     return this.request.del(
       _.merge(
         {
@@ -204,7 +236,7 @@ export default class RestApi {
    - @param {object} result - the operation result
    @return {promise}
    */
-  get(options, callback) {
+  get(options: any, callback: any) {
     const getPromise = this.request.get(
       _.merge(
         {
@@ -247,7 +279,7 @@ export default class RestApi {
    - @param {object} result - the operation result
    @return {promise}
    */
-  query(options, callback) {
+  query(options: any, callback: any) {
     const self = this;
     options = _.merge({
       start: 1,
@@ -271,9 +303,9 @@ export default class RestApi {
           options.query.toQueryString()) || options.query;
     }
 
-    let results = [];
+    let results: any[] = [];
 
-    function loadRemainingPages(result) {
+    function loadRemainingPages(result: any): any {
       const pageResults = result.Results;
       results = results.concat(pageResults);
       if (options.limit && result.StartIndex + options.pageSize <= Math.min(options.limit || options.pageSize, result.TotalResultCount)) {
@@ -311,8 +343,8 @@ export default class RestApi {
    - @param {object} result - the operation result
    @return {promise}
    */
-  add(options, callback) {
-    return collectionPost.call(this, options, 'add', callback);
+  add(options: any, callback: any) {
+    return this.collectionPost(options, 'add', callback);
   }
 
   /**
@@ -330,7 +362,7 @@ export default class RestApi {
    - @param {object} result - the operation result
    @return {promise}
    */
-  remove(options, callback) {
-    return collectionPost.call(this, options, 'remove', callback);
+  remove(options: any, callback: any) {
+    return this.collectionPost(options, 'remove', callback);
   }
 }

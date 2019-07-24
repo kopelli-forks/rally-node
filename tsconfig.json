@@ -1,12 +1,14 @@
 {
   "compilerOptions": {
-    "target": "esnext",
-    "moduleResolution": "node",
     "allowJs": true,
-    "noEmit": true,
-    "strict": true,
+    "esModuleInterop": true,
     "isolatedModules": true,
-    "esModuleInterop": true
+    "moduleResolution": "node",
+    "noImplicitThis": true,
+    "noEmit": true,
+    "resolveJsonModule": true,
+    "strict": true,
+    "target": "esnext"
   },
   "include": [
     "lib"
