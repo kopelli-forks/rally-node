@@ -199,22 +199,14 @@ function () {
       }, options.requestOptions, optionsToRequestOptions(options)), callback);
     }
     /**
-     Get an object
-     @param {object} options - The get options (required)
-     - @member {string} ref - The ref of the object to get, e.g. /defect/12345 (required)
-     - @member {object} scope - the default scoping to use.  if not specified server default will be used.
-     - @member {ref} scope.workspace - the workspace
-     - @member {string/string[]} fetch - the fields to include on the returned record
-     - @member {object} requestOptions - Additional options to be applied to the request: https://github.com/mikeal/request (optional)
-     @param {function} callback - A callback to be called when the operation completes
-     - @param {string[]} errors - Any errors which occurred
-     - @param {object} result - the operation result
-     @return {promise}
+     * Get an object
+     * @param options [required] The get options
+     * @param cb [optional] A callback when the operation completes
      */
 
   }, {
     key: "get",
-    value: function get(options, callback) {
+    value: function get(options, cb) {
       var getPromise = this.request.get(_lodash["default"].merge({
         url: _ref["default"].getRelative(options.ref)
       }, options.requestOptions, optionsToRequestOptions(options))).then(function (result) {
@@ -224,7 +216,7 @@ function () {
           Object: _lodash["default"].omit(result, ['Errors', 'Warnings'])
         };
       });
-      (0, _callbackify["default"])(getPromise, callback);
+      (0, _callbackify["default"])(getPromise, cb);
       return getPromise;
     }
     /**

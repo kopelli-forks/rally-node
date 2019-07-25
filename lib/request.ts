@@ -1,10 +1,8 @@
 import request from 'request';
 import _ from 'lodash';
 import callbackify from './util/callbackify';
-
-class RequestError extends Error {
-  errors?: string[];
-}
+import { callback } from './util/callback';
+import { RequestError } from './RequestError';
 
 const generateError: (x: string[]) => RequestError = (errorMessages: string[]) => {
   const e = new RequestError(errorMessages[0]);
@@ -22,15 +20,13 @@ interface IRequestConstructorOptions {
   apiVersion?: string;
 }
 
-type callback = (err: any, obj: any) => void;
-
 export default class Request {
-  wsapiUrl: string;
-  jar: request.CookieJar;
-  _requestOptions: request.CoreOptions;
-  httpRequest: request.RequestAPI<request.Request, request.CoreOptions, request.RequiredUriUrl>;
-  _hasKey: any;
-  _token: any;
+  private wsapiUrl: string;
+  private jar: request.CookieJar;
+  private _requestOptions: request.CoreOptions;
+  private httpRequest: request.RequestAPI<request.Request, request.CoreOptions, request.RequiredUriUrl>;
+  private _hasKey: any;
+  private _token: any;
   constructor(options: IRequestConstructorOptions) {
     this.wsapiUrl = `${options.server}/slm/webservice/${options.apiVersion}`;
     this.jar = request.jar();
@@ -41,7 +37,7 @@ export default class Request {
         options.requestOptions.headers.zsessionid;
   }
 
-  auth(): Promise<any> {
+  private auth(): Promise<any> {
     return this.doRequest('get', {
       url: '/security/authorize'
     }).then((result) => {
@@ -49,7 +45,7 @@ export default class Request {
     });
   }
 
-  private doSecuredRequest(method: string, options: request.UrlOptions, callback?: callback): Promise<any> {
+  private doSecuredRequest(method: string, options: request.UrlOptions, callback?: callback<any>): Promise<any> {
     if (this._hasKey) {
       return this.doRequest(method, options, callback);
     }
@@ -77,7 +73,7 @@ export default class Request {
     return securedRequestPromise;
   }
 
-  private doRequest(method: string, options: request.UrlOptions, callback?: callback): Promise<any> {
+  private doRequest(method: string, options: request.UrlOptions, callback?: callback<any>): Promise<any> {
     const doRequestPromise = new Promise<any>((resolve, reject) => {
       const requestOptions = _.merge({}, options, {
         url: this.wsapiUrl + options.url
@@ -114,19 +110,16 @@ export default class Request {
     return doRequestPromise;
   }
 
-  get(options: request.UrlOptions, callback?: callback): Promise<any> {
+  get<T>(options: request.UrlOptions, callback?: callback<T>): Promise<T> {
     return this.doRequest('get', options, callback);
   }
-
-  post(options: request.UrlOptions, callback?: callback): Promise<any> {
+  post<T>(options: request.UrlOptions, callback?: callback<T>): Promise<T> {
     return this.doSecuredRequest('post', options, callback);
   }
-
-  put(options: request.UrlOptions, callback?: callback): Promise<any> {
+  put<T>(options: request.UrlOptions, callback?: callback<T>): Promise<T> {
     return this.doSecuredRequest('put', options, callback);
   }
-
-  del(options: request.UrlOptions, callback?: callback): Promise<any> {
+  del<T>(options: request.UrlOptions, callback?: callback<T>): Promise<T> {
     return this.doSecuredRequest('del', options, callback);
   }
 }

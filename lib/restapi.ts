@@ -7,8 +7,10 @@
 import _ from 'lodash';
 import Request from './request';
 import callbackify from './util/callbackify';
+import { callback } from "./util/callback";
 import refUtils from './util/ref';
 import pkgInfo from '../package.json';
+import { GetResult } from './typings';
 
 const defaultServer = 'https://rally1.rallydev.com';
 const defaultApiVersion = 'v2.0';
@@ -87,7 +89,7 @@ export default class RestApi {
   /**
    * @param options (optional) - optional config for the REST client
    */
-  constructor(options: IRestApiOptions) {
+  constructor(options?: IRestApiOptions) {
     options = _.merge({
       server: defaultServer,
       apiVersion: defaultApiVersion,
@@ -228,20 +230,12 @@ export default class RestApi {
   }
 
   /**
-   Get an object
-   @param {object} options - The get options (required)
-   - @member {string} ref - The ref of the object to get, e.g. /defect/12345 (required)
-   - @member {object} scope - the default scoping to use.  if not specified server default will be used.
-   - @member {ref} scope.workspace - the workspace
-   - @member {string/string[]} fetch - the fields to include on the returned record
-   - @member {object} requestOptions - Additional options to be applied to the request: https://github.com/mikeal/request (optional)
-   @param {function} callback - A callback to be called when the operation completes
-   - @param {string[]} errors - Any errors which occurred
-   - @param {object} result - the operation result
-   @return {promise}
+   * Get an object
+   * @param options [required] The get options
+   * @param cb [optional] A callback when the operation completes
    */
-  get(options: any, callback: any): Promise<any> {
-    const getPromise = this.request.get(
+  get<T>(options: any, cb?: callback<GetResult<T>>): Promise<GetResult<T>> {
+    const getPromise = this.request.get<GetResult<T>>(
       _.merge(
         {
           url: refUtils.getRelative(options.ref)
@@ -253,11 +247,11 @@ export default class RestApi {
       return {
         Errors: result.Errors,
         Warnings: result.Warnings,
-        Object: _.omit(result, ['Errors', 'Warnings'])
+        Object: (_.omit(result, ['Errors', 'Warnings']) as unknown) as T
       };
     });
 
-    callbackify(getPromise, callback);
+    callbackify(getPromise, cb);
     return getPromise;
   }
 

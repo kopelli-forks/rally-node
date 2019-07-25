@@ -5,12 +5,12 @@ Object.defineProperty(exports, "__esModule", {
 });
 exports["default"] = _default;
 
-function _default(promise, callback) {
-  if (typeof callback === 'function') {
+function _default(promise, cb) {
+  if (typeof cb === 'function') {
     promise.then(function (obj) {
-      return callback(null, obj);
+      return cb(null, obj);
     }, function (err) {
-      return callback(err, null);
+      return cb(err, null);
     });
   }
 }

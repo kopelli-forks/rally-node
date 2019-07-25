@@ -1,5 +1,7 @@
-export default function(promise: Promise<any>, callback?: (err: any, obj: any) => void): void {
-  if (typeof callback === 'function') {
-    promise.then(obj => callback(null, obj), err => callback(err, null));
+import { callback } from "./callback";
+
+export default function<T>(promise: Promise<T>, cb?: callback<T>): void {
+  if (typeof cb === 'function') {
+    promise.then(obj => cb(null, obj), err => cb(err, null));
   }
 }
