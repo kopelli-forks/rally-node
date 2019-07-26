@@ -18,6 +18,7 @@
   ],
   "main": "dist/index.js",
   "scripts": {
+    "prebuild": "npm run check-types",
     "build": "cross-env BABEL_ENV=commonjs babel src --extensions '.js,.ts' --out-dir dist",
     "check-types": "tsc",
     "lint": "eslint --ext .js,.ts .",
