@@ -1,5 +1,5 @@
 import should from 'should';
-import Request from '../lib/request';
+import Request from '../src/request';
 import request from 'request';
 import sinon from 'sinon';
 import _ from 'lodash';

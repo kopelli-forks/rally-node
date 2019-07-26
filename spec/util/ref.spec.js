@@ -1,5 +1,5 @@
 import should from 'should';
-import { rally } from '../../lib/index';
+import { rally } from '../../src/index';
 
 const refUtils = rally.util.ref;
 
