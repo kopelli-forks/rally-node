@@ -1,16 +1,17 @@
 {
   "compilerOptions": {
-    "allowJs": true,
+    "allowJs": false,
+    "declaration": true,
+    "declarationDir": "dist",
     "esModuleInterop": true,
     "isolatedModules": false,
+    "module": "commonjs",
     "moduleResolution": "node",
     "noImplicitThis": true,
-    "noEmit": true,
+    "noEmit": false,
+    "outDir": "dist",
     "resolveJsonModule": true,
     "strict": true,
     "target": "esnext"
-  },
-  "exclude": [
-    "dist"
-  ]
+  }
 }

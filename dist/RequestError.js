@@ -46,3 +46,4 @@ function (_Error) {
 }((0, _wrapNativeSuper2["default"])(Error));
 
 exports.RequestError = RequestError;
+//# sourceMappingURL=data:application/json;charset=utf-8;base64,eyJ2ZXJzaW9uIjozLCJzb3VyY2VzIjpbIi4uL3NyYy9SZXF1ZXN0RXJyb3IudHMiXSwibmFtZXMiOlsiUmVxdWVzdEVycm9yIiwiRXJyb3IiXSwibWFwcGluZ3MiOiI7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7O0lBQWFBLFk7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7b0NBQXFCQyxLIiwic291cmNlc0NvbnRlbnQiOlsiZXhwb3J0IGNsYXNzIFJlcXVlc3RFcnJvciBleHRlbmRzIEVycm9yIHtcclxuICBlcnJvcnM/OiBzdHJpbmdbXTtcclxufVxyXG4iXX0=
