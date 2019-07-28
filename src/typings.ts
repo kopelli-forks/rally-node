@@ -90,7 +90,7 @@ export class GetOptions {
    * Additional options to be applied to the request:
    * https://github.com/mikeal/request (optional)
    */
-  requestOptions?: any;
+  requestOptions?: request.CoreOptions;
 }
 
 export class OptionsScope {
