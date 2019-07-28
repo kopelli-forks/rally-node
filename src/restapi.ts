@@ -10,7 +10,8 @@ import callbackify from './util/callbackify';
 import { callback } from "./util/callback";
 import refUtils from './util/ref';
 import pkgInfo from '../package.json';
-import { GetResult } from './typings';
+import { GetResult, QueryOptions } from './typings';
+import Query from './util/query';
 
 const defaultServer = 'https://rally1.rallydev.com';
 const defaultApiVersion = 'v2.0';
@@ -277,18 +278,19 @@ export default class RestApi {
    - @param {object} result - the operation result
    @return {promise}
    */
-  query(options: any, callback: any): Promise<any> {
+  query(options: QueryOptions, callback?: any): Promise<any> {
     const self = this;
+    const pageSizeDefault = 200;
     options = _.merge({
       start: 1,
-      pageSize: 200
+      pageSize: pageSizeDefault
     }, options);
 
     const requestOptions = _.merge({
       url: refUtils.getRelative(options.ref) || `/${options.type}`,
       qs: {
         start: options.start,
-        pagesize: options.limit ? Math.min(options.pageSize, options.limit) : options.pageSize
+        pagesize: options.limit ? Math.min(options.pageSize || pageSizeDefault, options.limit) : options.pageSize
       }
     }, options.requestOptions, optionsToRequestOptions(options));
     if (_.isArray(options.order)) {
@@ -297,8 +299,8 @@ export default class RestApi {
       requestOptions.qs.order = options.order;
     }
     if (options.query) {
-      requestOptions.qs.query = (options.query.toQueryString &&
-          options.query.toQueryString()) || options.query;
+      requestOptions.qs.query = ((options.query as Query) &&
+          (options.query as Query).toQueryString()) || options.query;
     }
 
     let results: any[] = [];
@@ -306,7 +308,7 @@ export default class RestApi {
     function loadRemainingPages(result: any): any {
       const pageResults = result.Results;
       results = results.concat(pageResults);
-      if (options.limit && result.StartIndex + options.pageSize <= Math.min(options.limit || options.pageSize, result.TotalResultCount)) {
+      if (options.limit && result.StartIndex + options.pageSize <= Math.min(options.limit || options.pageSize || pageSizeDefault, result.TotalResultCount)) {
         return self.request.get(_.merge(requestOptions, {
           qs: {
             start: result.StartIndex + options.pageSize
