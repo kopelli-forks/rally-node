@@ -12,6 +12,7 @@ import refUtils from './util/ref';
 import pkgInfo from '../package.json';
 import { GetResult, QueryOptions } from './typings';
 import Query from './util/query';
+import request from 'request';
 
 const defaultServer = 'https://rally1.rallydev.com';
 const defaultApiVersion = 'v2.0';
@@ -24,10 +25,7 @@ interface IRequestOptions {
   fetch?: string;
 }
 
-interface IRequestOptionsContainer {
-  qs: IRequestOptions;
-}
-function optionsToRequestOptions(options: any): IRequestOptionsContainer {
+function optionsToRequestOptions(options: any): request.CoreOptions {
   const qs: IRequestOptions = {};
   if (options.scope) {
     if (options.scope.project) {
@@ -258,27 +256,10 @@ export default class RestApi {
 
   /**
    Query for objects
-   @param {object} options - The query options (required)
-   - @member {string} ref - The ref of the collection to query, e.g. /defect/12345/tasks (required if type not specified)
-   - @member {string} type - The type to query, e.g. defect, hierarchicalrequirement (required if ref not specified)
-   - @member {object} scope - the default scoping to use.  if not specified server default will be used.
-   - @member {ref} scope.workspace - the workspace
-   - @member {ref} scope.project - the project, or null to include entire workspace
-   - @member {ref} scope.up - true to include parent project data, false otherwise
-   - @member {ref} scope.down - true to include child project data, false otherwise
-   - @member {int} start - the 1 based start index
-   - @member {int} pageSize - the page size, 1 - 200 (default=200)
-   - @member {int} limit - the maximum number of records to return
-   - @member {string/string[]} fetch - the fields to include on each returned record
-   - @member {string/string[]} order - the order by which to sort the results
-   - @member {string/query} query - a query to filter the result set
-   - @member {object} requestOptions - Additional options to be applied to the request: https://github.com/mikeal/request (optional)
-   @param {function} callback - A callback to be called when the operation completes
-   - @param {string[]} errors - Any errors which occurred
-   - @param {object} result - the operation result
-   @return {promise}
+   @param options - The query options
+   @param callback - A callback to be called when the operation completes
    */
-  query(options: QueryOptions, callback?: any): Promise<any> {
+  query(options: QueryOptions, callback?: callback<any>): Promise<any> {
     const self = this;
     const pageSizeDefault = 200;
     options = _.merge({
@@ -292,7 +273,7 @@ export default class RestApi {
         start: options.start,
         pagesize: options.limit ? Math.min(options.pageSize || pageSizeDefault, options.limit) : options.pageSize
       }
-    }, options.requestOptions, optionsToRequestOptions(options));
+    }, options.requestOptions, optionsToRequestOptions(options)) as request.UrlOptions & request.CoreOptions;
     if (_.isArray(options.order)) {
       requestOptions.qs.order = options.order.join(',');
     } else if (_.isString(options.order)) {
@@ -313,7 +294,7 @@ export default class RestApi {
           qs: {
             start: result.StartIndex + options.pageSize
           }
-        })).then(loadRemainingPages);
+        }) as request.UrlOptions).then(loadRemainingPages);
       } else {
         result.Results = results.slice(0, options.limit || results.length);
         result.StartIndex = options.start;

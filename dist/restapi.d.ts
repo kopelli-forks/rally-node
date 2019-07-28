@@ -86,27 +86,10 @@ export default class RestApi {
     get<T>(options: any, cb?: callback<GetResult<T>>): Promise<GetResult<T>>;
     /**
      Query for objects
-     @param {object} options - The query options (required)
-     - @member {string} ref - The ref of the collection to query, e.g. /defect/12345/tasks (required if type not specified)
-     - @member {string} type - The type to query, e.g. defect, hierarchicalrequirement (required if ref not specified)
-     - @member {object} scope - the default scoping to use.  if not specified server default will be used.
-     - @member {ref} scope.workspace - the workspace
-     - @member {ref} scope.project - the project, or null to include entire workspace
-     - @member {ref} scope.up - true to include parent project data, false otherwise
-     - @member {ref} scope.down - true to include child project data, false otherwise
-     - @member {int} start - the 1 based start index
-     - @member {int} pageSize - the page size, 1 - 200 (default=200)
-     - @member {int} limit - the maximum number of records to return
-     - @member {string/string[]} fetch - the fields to include on each returned record
-     - @member {string/string[]} order - the order by which to sort the results
-     - @member {string/query} query - a query to filter the result set
-     - @member {object} requestOptions - Additional options to be applied to the request: https://github.com/mikeal/request (optional)
-     @param {function} callback - A callback to be called when the operation completes
-     - @param {string[]} errors - Any errors which occurred
-     - @param {object} result - the operation result
-     @return {promise}
+     @param options - The query options
+     @param callback - A callback to be called when the operation completes
      */
-    query(options: QueryOptions, callback?: any): Promise<any>;
+    query(options: QueryOptions, callback?: callback<any>): Promise<any>;
     /**
      Adds items to a collection
      @param {object} options - The add options (required)
