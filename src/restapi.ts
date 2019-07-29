@@ -6,11 +6,11 @@
  */
 import _ from 'lodash';
 import Request from './request';
-import callbackify from './util/callbackify';
+import { callbackify } from './util/callbackify';
 import { callback } from "./util/callback";
 import refUtils from './util/ref';
 import pkgInfo from '../package.json';
-import { GetResult, QueryOptions } from './typings';
+import { GetResult, QueryOptions, QueryResult } from './typings';
 import Query from './util/query';
 import request from 'request';
 
@@ -259,7 +259,7 @@ export default class RestApi {
    @param options - The query options
    @param callback - A callback to be called when the operation completes
    */
-  query(options: QueryOptions, callback?: callback<any>): Promise<any> {
+  query<T>(options: QueryOptions, callback?: callback<T>): Promise<QueryResult<T>> {
     const self = this;
     const pageSizeDefault = 200;
     options = _.merge({
@@ -284,13 +284,13 @@ export default class RestApi {
           (options.query as Query).toQueryString()) || options.query;
     }
 
-    let results: any[] = [];
+    let results: T[] = [];
 
-    function loadRemainingPages(result: any): any {
+    function loadRemainingPages(result: any): Promise<QueryResult<T>> {
       const pageResults = result.Results;
       results = results.concat(pageResults);
       if (options.limit && result.StartIndex + options.pageSize <= Math.min(options.limit || options.pageSize || pageSizeDefault, result.TotalResultCount)) {
-        return self.request.get(_.merge(requestOptions, {
+        return self.request.get<T>(_.merge(requestOptions, {
           qs: {
             start: result.StartIndex + options.pageSize
           }
@@ -299,13 +299,13 @@ export default class RestApi {
         result.Results = results.slice(0, options.limit || results.length);
         result.StartIndex = options.start;
         result.PageSize = results.length;
-        return result;
+        return Promise.resolve(result);
       }
     }
 
-    const queryPromise = this.request.get(requestOptions).then(loadRemainingPages);
+    const queryPromise = this.request.get<T>(requestOptions).then(loadRemainingPages);
 
-    callbackify(queryPromise, callback);
+    //callbackify(queryPromise, callback);
     return queryPromise;
   }
 

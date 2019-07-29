@@ -55,18 +55,22 @@ export interface IAPIAttributes extends IAPIBaseAttributes {
 }
 
 export class QueryResult<T> {
-  Errors: string[] | undefined;
-  Warnings: string[] | undefined;
-  Result: T[] | undefined;
-  StartIndex: number | undefined;
-  PageSize: number | undefined;
-  TotalResultCount: number | undefined;
+  Errors!: string[];
+  Warnings!: string[];
+  Result!: T[];
+  StartIndex!: number;
+  PageSize!: number;
+  TotalResultCount!: number;
 }
 
 export class GetResult<T> {
   Errors!: string[];
   Warnings!: string[];
   Object!: T;
+}
+
+export class Secured {
+  SecurityToken!: string;
 }
 
 export class GetOptions {

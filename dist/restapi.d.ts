@@ -1,5 +1,5 @@
 import { callback } from "./util/callback";
-import { GetResult, QueryOptions } from './typings';
+import { GetResult, QueryOptions, QueryResult } from './typings';
 /**
  * Configuration options for the REST client.
  */
@@ -89,7 +89,7 @@ export default class RestApi {
      @param options - The query options
      @param callback - A callback to be called when the operation completes
      */
-    query(options: QueryOptions, callback?: callback<any>): Promise<any>;
+    query<T>(options: QueryOptions, callback?: callback<T>): Promise<QueryResult<T>>;
     /**
      Adds items to a collection
      @param {object} options - The add options (required)

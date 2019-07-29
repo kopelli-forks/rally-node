@@ -1,2 +1,2 @@
 import { callback } from "./callback";
-export default function <T>(promise: Promise<T>, cb?: callback<T>): void;
+export declare function callbackify<U>(promise: Promise<U>, cb?: callback<U>): void;

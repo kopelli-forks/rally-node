@@ -48,17 +48,20 @@ export interface IAPIAttributes extends IAPIBaseAttributes {
     readonly _type: string;
 }
 export declare class QueryResult<T> {
-    Errors: string[] | undefined;
-    Warnings: string[] | undefined;
-    Result: T[] | undefined;
-    StartIndex: number | undefined;
-    PageSize: number | undefined;
-    TotalResultCount: number | undefined;
+    Errors: string[];
+    Warnings: string[];
+    Result: T[];
+    StartIndex: number;
+    PageSize: number;
+    TotalResultCount: number;
 }
 export declare class GetResult<T> {
     Errors: string[];
     Warnings: string[];
     Object: T;
+}
+export declare class Secured {
+    SecurityToken: string;
 }
 export declare class GetOptions {
     /**
