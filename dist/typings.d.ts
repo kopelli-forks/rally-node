@@ -50,7 +50,7 @@ export interface IAPIAttributes extends IAPIBaseAttributes {
 export declare class QueryResult<T> {
     Errors: string[];
     Warnings: string[];
-    Result: T[];
+    Results: T[];
     StartIndex: number;
     PageSize: number;
     TotalResultCount: number;
