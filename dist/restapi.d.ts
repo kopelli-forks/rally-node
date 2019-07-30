@@ -1,5 +1,7 @@
 import { callback } from "./util/callback";
-import { GetResult, QueryOptions, QueryResult } from './typings';
+import { GetResult } from "./types/GetResult";
+import { QueryOptions } from './types/QueryOptions';
+import { QueryResult } from "./types/QueryResult";
 /**
  * Configuration options for the REST client.
  */

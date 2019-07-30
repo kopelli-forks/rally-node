@@ -3,7 +3,7 @@ import _ from 'lodash';
 import { callbackify } from './util/callbackify';
 import { callback } from './util/callback';
 import { RequestError } from './RequestError';
-import { Secured } from './typings';
+import { Secured } from './types/Secured';
 
 const generateError: (x: string[]) => RequestError = (errorMessages: string[]) => {
   const e = new RequestError(errorMessages[0]);

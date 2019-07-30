@@ -10,7 +10,9 @@ import { callbackify } from './util/callbackify';
 import { callback } from "./util/callback";
 import refUtils from './util/ref';
 import pkgInfo from '../package.json';
-import { GetResult, QueryOptions, QueryResult } from './typings';
+import { GetResult } from "./types/GetResult";
+import { QueryOptions } from './types/QueryOptions';
+import { QueryResult } from "./types/QueryResult";
 import Query from './util/query';
 import request from 'request';
 
